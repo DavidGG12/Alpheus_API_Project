@@ -54,6 +54,18 @@
               "target": "Package",
               "version": "[1.22.1, )"
             },
+            "NLog": {
+              "target": "Package",
+              "version": "[6.0.4, )"
+            },
+            "NLog.Extensions.Logging": {
+              "target": "Package",
+              "version": "[6.0.4, )"
+            },
+            "NLog.Web.AspNetCore": {
+              "target": "Package",
+              "version": "[6.0.4, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.6.2, )"
