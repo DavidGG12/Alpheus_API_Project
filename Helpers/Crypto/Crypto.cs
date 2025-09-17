@@ -50,22 +50,29 @@ namespace Alpheus_API.Helpers.Crypto
 
         public string Encrypt(string word)
         {
-            using (Aes aes = Aes.Create())
+            try
             {
-                byte[] saltBytes = Encoding.UTF8.GetBytes(_secretSalt);
-                var key = new Rfc2898DeriveBytes(_secretKey, saltBytes, 10000);
-                aes.Key = key.GetBytes(32);
-                aes.IV = key.GetBytes(16);
-
-                var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
-                using (var ms = new MemoryStream())
+                using (Aes aes = Aes.Create())
                 {
-                    using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
-                    using (var sw = new StreamWriter(cs))
-                        sw.Write(word);
+                    byte[] saltBytes = Encoding.UTF8.GetBytes(_secretSalt);
+                    var key = new Rfc2898DeriveBytes(_secretKey, saltBytes, 10000);
+                    aes.Key = key.GetBytes(32);
+                    aes.IV = key.GetBytes(16);
 
-                    return Convert.ToBase64String(ms.ToArray());
+                    var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+                    using (var ms = new MemoryStream())
+                    {
+                        using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+                        using (var sw = new StreamWriter(cs))
+                            sw.Write(word);
+
+                        return Convert.ToBase64String(ms.ToArray());
+                    }
                 }
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 
