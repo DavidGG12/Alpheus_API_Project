@@ -1,7 +1,12 @@
 ﻿using Alpheus_API.Helpers.DataBases.DBConnection;
+using Alpheus_API.Helpers.ErrorCatches;
+using Alpheus_API.Helpers.ErrorCatches.Interfaces;
+using Alpheus_API.Models.Requests.UserRequests.Post;
 using Alpheus_API.Models.Responses;
 using Alpheus_API.Models.Responses.UserReponses.Get;
+using Alpheus_API.Models.Responses.UserReponses.Post;
 using Alpheus_API.Models.Users;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using System.Diagnostics;
@@ -24,7 +29,7 @@ namespace Alpheus_API.Controllers
 
         #region GET
 
-        [HttpGet("/allRoles")]
+        [HttpGet("/AllRoles")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -39,6 +44,7 @@ namespace Alpheus_API.Controllers
             var rpGetAllRoles = new rp_Get_AllRoles_Model();
             var rpInfo = new rp_Alpheus_API_General_Model();
             var rpRoles = new List<Tbl_Alpheus_Role_Model>();
+            var errorCatch = ErrorCatch.GetInsErrorCatch();
 
             try
             {
@@ -67,25 +73,15 @@ namespace Alpheus_API.Controllers
             }
             catch (Exception ex)
             {
-                rpInfo.Status = "B";
-                rpInfo.Message = $"There are a problem with the execution of {nameof(GetAllRoles)} method.";
-
-                rpGetAllRoles.Info = rpInfo;
+                var message = $"There are a problem with the execution of {nameof(this.GetAllRoles)}";
+                rpGetAllRoles.Info = errorCatch.GenInfoError<rp_Alpheus_API_General_Model>(message, null, stopWatch);
                 rpGetAllRoles.Roles = null;
-
-                logger.Error($"There are a problem with the execution of {nameof(GetAllRoles)} method.");
-                logger.Error($"Error: {ex.Message}");
-
-                stopWatch.Stop();
-                var ts = stopWatch.Elapsed;
-
-                logger.Info($"Time of execution: {ts.TotalMilliseconds} ms");
 
                 return BadRequest(rpGetAllRoles);
             }
         }
 
-        [HttpGet("/rol")]
+        [HttpGet("/Rol")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -100,25 +96,16 @@ namespace Alpheus_API.Controllers
             var rpGetRol = new rp_Get_Rol_Model();
             var rpInfo = new rp_Alpheus_API_General_Model();
             var rpRol = new Tbl_Alpheus_Role_Model();
+            var errorCatch = ErrorCatch.GetInsErrorCatch();
 
             try
             {
+
                 if(string.IsNullOrEmpty(idRol) && string.IsNullOrEmpty(nameRol))
                 {
-                    logger.Warn($"Both parameters: {nameof(idRol)} and {nameof(nameRol)} are null or empty.");
-
-                    rpInfo.Status = "B";
-                    rpInfo.Message = "Check the parameters 'cause it recovers empty values or null.";
-
-                    rpGetRol.Info = rpInfo;
-                    rpGetRol.Rol = null;
-
-                    stopWatch.Stop();
-                    var ts = stopWatch.Elapsed;
-
-                    logger.Info($"Time of execution: {ts.TotalMilliseconds} ms");
-
-                    return BadRequest(rpGetRol);
+                    var message = $"Both parameters: {nameof(idRol)} and {nameof(nameRol)} are null or empty.";
+                    
+                    return BadRequest(errorCatch.GenInfoError<rp_Get_Rol_Model>(message, null, stopWatch));
                 }
 
                 var dbSql = DbSQLServer.GetInsSQLServer(_config, "DB01");
@@ -151,21 +138,9 @@ namespace Alpheus_API.Controllers
             }
             catch(Exception ex)
             {
-                rpInfo.Status = "B";
-                rpInfo.Message = $"There are a problem with the execution of {nameof(GetRol)} method.";
-
-                rpGetRol.Info = rpInfo;
-                rpGetRol.Rol = null;
-
-                logger.Error($"There are a problem with the execution of {nameof(GetRol)} method.");
-                logger.Error($"Error: {ex.Message}");
-
-                stopWatch.Stop();
-                var ts = stopWatch.Elapsed;
-
-                logger.Info($"Time of execution: {ts.TotalMilliseconds} ms");
-
-                return BadRequest(rpGetRol);
+                var message = $"There are a problem with the execution of {nameof(GetRol)} method.";
+                
+                return BadRequest(errorCatch.GenInfoError<rp_Get_Rol_Model>(message, ex.Message, stopWatch));
             }
         }
 
@@ -174,7 +149,59 @@ namespace Alpheus_API.Controllers
 
         #region POST
 
-        //public IActionResult 
+        [HttpPost("/CreateRol")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status408RequestTimeout)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult CreateRol(rq_Post_CreateRol_Model? rqRol)
+        {
+            stopWatch.Start();
+            logger.Info($"Start for the {nameof(this.GetRol)} method execution.");
+
+            var rpCreateRol = new rp_Post_CreateRol_Model();
+            var rpInfo = new rp_Alpheus_API_General_Model();
+            var rpRol = new Tbl_Alpheus_Role_Model();
+            var errorCatch = ErrorCatch.GetInsErrorCatch();
+
+            try
+            {
+                if(rqRol == null || string.IsNullOrEmpty(rqRol.RoleName))
+                {
+                    var message = "It's not provided the json.";
+                    return BadRequest(errorCatch.GenInfoError<rp_Post_CreateRol_Model>(message, null, stopWatch));
+                }
+
+                var parameters = new Dictionary<string, object>()
+                {
+                    { "@nmRol", rqRol.RoleName }
+                };
+                var dbSql = DbSQLServer.GetInsSQLServer(_config, "DB01");
+                rpRol = dbSql.GetData<Tbl_Alpheus_Role_Model>("sp_Alpheus_InRol", parameters);
+
+                if(rpRol == null)
+                {
+                    var message = "Sorry! Rol was not created.";
+                    return BadRequest(errorCatch.GenInfoError<rp_Post_CreateRol_Model>(message, null, stopWatch));
+                }
+
+                rpInfo.Status = "S";
+                rpInfo.Message = "Rol created";
+
+                rpCreateRol.Info = rpInfo;
+                rpCreateRol.IDRol = rpRol.IDRol;
+
+                return Ok(rpCreateRol);
+            }
+            catch (Exception ex)
+            {
+                var message = $"There are a problem with the execution of {nameof(this.CreateRol)} method.";
+
+                return BadRequest(errorCatch.GenInfoError<rp_Post_CreateRol_Model>(message, ex.Message, stopWatch));
+            }
+        }
 
         #endregion
     }

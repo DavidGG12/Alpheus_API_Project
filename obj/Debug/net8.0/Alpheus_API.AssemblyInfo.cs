@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Alpheus_API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f58efe664cb6de5cd283caa8e134eb12207003cd")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+da53aeb8200f6cbfe63ce530585ef6575b895706")]
 [assembly: System.Reflection.AssemblyProductAttribute("Alpheus_API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Alpheus_API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

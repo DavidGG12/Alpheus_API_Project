@@ -2,7 +2,7 @@
   {
     "ContainingType": "Alpheus_API.Controllers.UserController",
     "Method": "GetAllRoles",
-    "RelativePath": "allRoles",
+    "RelativePath": "AllRoles",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -54,8 +54,67 @@
   },
   {
     "ContainingType": "Alpheus_API.Controllers.UserController",
+    "Method": "CreateRol",
+    "RelativePath": "CreateRol",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "rqRol",
+        "Type": "Alpheus_API.Models.Requests.UserRequests.Post.rq_Post_CreateRol_Model",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 201
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 401
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 408
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 500
+      }
+    ]
+  },
+  {
+    "ContainingType": "Alpheus_API.Controllers.UserController",
     "Method": "GetRol",
-    "RelativePath": "rol",
+    "RelativePath": "Rol",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
