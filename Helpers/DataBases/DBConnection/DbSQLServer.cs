@@ -110,8 +110,10 @@ namespace Alpheus_API.Helpers.DataBases.DBConnection
                 {
                     var model = new T();
                     foreach (var property in properties)
+                    {
                         if (row.Table.Columns.Contains(property.Name) && !row.IsNull(property.Name))
                             property.SetValue(model, Convert.ChangeType(row[property.Name], property.PropertyType));
+                    }
 
                     modelList.Add(model);
                 }
@@ -141,7 +143,7 @@ namespace Alpheus_API.Helpers.DataBases.DBConnection
             }
         }
 
-        public List<T> GetDataList<T>(string storedName, Dictionary<string, object> parameters) where T : new()
+        public List<T> GetDataList<T>(string storedName, Dictionary<string, object>? parameters) where T : new()
         {
             try
             {

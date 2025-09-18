@@ -42,7 +42,7 @@ namespace Alpheus_API.Helpers.DataBases.ConnectionStrings
                 var dbPwd = crypto.Decrypt(_config.GetConnectionString("DBPwd"));
                 var dbNm = crypto.Decrypt(_config.GetConnectionString("DBNm"));
 
-                return string.Format("Data Source={0};Initial Catalog={1};Persist Security Info=True;User ID={2};Password={3}", dbServer, dbNm, dbUser, dbPwd);
+                return string.Format("Data Source={0};Initial Catalog={1};Persist Security Info=True;User ID={2};Password={3};TrustServerCertificate=True;", dbServer, dbNm, dbUser, dbPwd);
             }
             catch (Exception ex)
             {
